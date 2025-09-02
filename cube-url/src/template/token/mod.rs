@@ -27,6 +27,9 @@ pub(crate) use hash::*;
 mod equals;
 pub(crate) use equals::*;
 
+mod exclamation;
+pub(crate) use exclamation::*;
+
 mod or;
 pub(crate) use or::*;
 
@@ -39,6 +42,7 @@ pub enum Token {
     Asterisk(Asterisk),
     Colon(Colon),
     Equals(Equals),
+    Exclamation(Exclamation),
     Hash(Hash),
     Ident(Ident),
     Interrogate(Interrogate),
@@ -72,6 +76,13 @@ impl Token {
     pub fn is_equals(&self) -> bool {
         return match self {
             Self::Equals(_) => true,
+            _ => false,
+        };
+    }
+
+    pub fn is_exclamation(&self) -> bool {
+        return match self {
+            Self::Exclamation(_) => true,
             _ => false,
         };
     }
@@ -133,6 +144,7 @@ impl TryFrom<&mut Scanner<'_>> for Token {
             b'*' => Ok(Self::Asterisk(Asterisk::try_from(scan)?)),
             b':' => Ok(Self::Colon(Colon::try_from(scan)?)),
             b'=' => Ok(Self::Equals(Equals::try_from(scan)?)),
+            b'!' => Ok(Self::Exclamation(Exclamation::try_from(scan)?)),
             b'#' => Ok(Self::Hash(Hash::try_from(scan)?)),
             b'{' => Ok(Self::Ident(Ident::try_from(scan)?)),
             b'?' => Ok(Self::Interrogate(Interrogate::try_from(scan)?)),
@@ -150,6 +162,7 @@ impl fmt::Display for Token {
             Self::Asterisk(v) => write!(f, "{}", v),
             Self::Colon(v) => write!(f, "{}", v),
             Self::Equals(v) => write!(f, "{}", v),
+            Self::Exclamation(v) => write!(f, "{}", v),
             Self::Hash(v) => write!(f, "{}", v),
             Self::Ident(v) => write!(f, "{}", v),
             Self::Interrogate(v) => write!(f, "{}", v),

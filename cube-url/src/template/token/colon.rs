@@ -6,7 +6,7 @@ use cube_core::{bytes::Scanner, error::Error};
 ///
 /// Example
 /// -------
-/// `https://localhost`
+/// `:`
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Colon {

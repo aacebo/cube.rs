@@ -2,6 +2,11 @@ use std::fmt;
 
 use cube_core::{bytes::Scanner, error::Error};
 
+/// Template Or
+///
+/// Example
+/// -------
+/// `|`
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Or {
