@@ -1,0 +1,23 @@
+[package]
+name = "cube-http"
+description = ""
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+documentation.workspace = true
+homepage.workspace = true
+repository.workspace = true
+
+[features]
+tokio = ["dep:tokio", "server"]
+client = []
+server = []
+serde = ["dep:serde", "dep:serde_json"]
+
+[dependencies]
+cube-core = { path = "../cube-core" }
+cube-url = { path = "../cube-url" }
+bytes = { workspace = true }
+tokio = { workspace = true, optional = true, features = ["full"] }
+serde = { workspace = true, optional = true, features = ["derive"] }
+serde_json = { workspace = true, optional = true }

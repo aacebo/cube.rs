@@ -1,0 +1,13 @@
+[package]
+name = "cube-core"
+description = ""
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+documentation.workspace = true
+homepage.workspace = true
+repository.workspace = true
+
+[dependencies]
+bytes.workspace = true
+futures-io.workspace = true

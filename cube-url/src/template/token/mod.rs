@@ -1,0 +1,236 @@
+use std::fmt;
+
+mod text;
+pub(crate) use text::*;
+
+mod ident;
+pub(crate) use ident::*;
+
+mod interrogate;
+pub(crate) use interrogate::*;
+
+mod asterisk;
+pub(crate) use asterisk::*;
+
+mod ampersand;
+pub(crate) use ampersand::*;
+
+mod colon;
+pub(crate) use colon::*;
+
+mod slash;
+pub(crate) use slash::*;
+
+mod hash;
+pub(crate) use hash::*;
+
+mod equals;
+pub(crate) use equals::*;
+
+mod or;
+pub(crate) use or::*;
+
+use cube_core::{bytes::Scanner, error::Error};
+
+#[derive(Debug, Clone)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub enum Token {
+    Ampersand(Ampersand),
+    Asterisk(Asterisk),
+    Colon(Colon),
+    Equals(Equals),
+    Hash(Hash),
+    Ident(Ident),
+    Interrogate(Interrogate),
+    Or(Or),
+    Slash(Slash),
+    Text(Text),
+}
+
+impl Token {
+    pub fn is_ampersand(&self) -> bool {
+        return match self {
+            Self::Ampersand(_) => true,
+            _ => false,
+        };
+    }
+
+    pub fn is_asterisk(&self) -> bool {
+        return match self {
+            Self::Asterisk(_) => true,
+            _ => false,
+        };
+    }
+
+    pub fn is_colon(&self) -> bool {
+        return match self {
+            Self::Colon(_) => true,
+            _ => false,
+        };
+    }
+
+    pub fn is_equals(&self) -> bool {
+        return match self {
+            Self::Equals(_) => true,
+            _ => false,
+        };
+    }
+
+    pub fn is_hash(&self) -> bool {
+        return match self {
+            Self::Hash(_) => true,
+            _ => false,
+        };
+    }
+
+    pub fn is_ident(&self) -> bool {
+        return match self {
+            Self::Ident(_) => true,
+            _ => false,
+        };
+    }
+
+    pub fn is_interrogate(&self) -> bool {
+        return match self {
+            Self::Interrogate(_) => true,
+            _ => false,
+        };
+    }
+
+    pub fn is_or(&self) -> bool {
+        return match self {
+            Self::Or(_) => true,
+            _ => false,
+        };
+    }
+
+    pub fn is_slash(&self) -> bool {
+        return match self {
+            Self::Slash(_) => true,
+            _ => false,
+        };
+    }
+
+    pub fn is_text(&self) -> bool {
+        return match self {
+            Self::Text(_) => true,
+            _ => false,
+        };
+    }
+
+    #[cfg(feature = "serde")]
+    pub fn to_json(&self) -> String {
+        return serde_json::to_string_pretty(self).unwrap();
+    }
+}
+
+impl TryFrom<&mut Scanner<'_>> for Token {
+    type Error = Error;
+
+    fn try_from(scan: &mut Scanner<'_>) -> Result<Self, Self::Error> {
+        return match scan.curr() {
+            b'&' => Ok(Self::Ampersand(Ampersand::try_from(scan)?)),
+            b'*' => Ok(Self::Asterisk(Asterisk::try_from(scan)?)),
+            b':' => Ok(Self::Colon(Colon::try_from(scan)?)),
+            b'=' => Ok(Self::Equals(Equals::try_from(scan)?)),
+            b'#' => Ok(Self::Hash(Hash::try_from(scan)?)),
+            b'{' => Ok(Self::Ident(Ident::try_from(scan)?)),
+            b'?' => Ok(Self::Interrogate(Interrogate::try_from(scan)?)),
+            b'|' => Ok(Self::Or(Or::try_from(scan)?)),
+            b'/' => Ok(Self::Slash(Slash::try_from(scan)?)),
+            _ => Ok(Self::Text(Text::try_from(scan)?)),
+        };
+    }
+}
+
+impl fmt::Display for Token {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        return match self {
+            Self::Ampersand(v) => write!(f, "{}", v),
+            Self::Asterisk(v) => write!(f, "{}", v),
+            Self::Colon(v) => write!(f, "{}", v),
+            Self::Equals(v) => write!(f, "{}", v),
+            Self::Hash(v) => write!(f, "{}", v),
+            Self::Ident(v) => write!(f, "{}", v),
+            Self::Interrogate(v) => write!(f, "{}", v),
+            Self::Or(v) => write!(f, "{}", v),
+            Self::Slash(v) => write!(f, "{}", v),
+            Self::Text(v) => write!(f, "{}", v),
+        };
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use cube_core::bytes::Scanner;
+
+    #[test]
+    pub fn should_parse() {
+        let mut scan = Scanner::from("http://localhost:3000/test?hello={world}");
+        let mut token = super::Token::try_from(&mut scan).unwrap();
+
+        assert!(token.is_text());
+        assert_eq!(token.to_string(), "http");
+
+        token = super::Token::try_from(&mut scan).unwrap();
+
+        assert!(token.is_colon());
+        assert_eq!(token.to_string(), ":");
+
+        token = super::Token::try_from(&mut scan).unwrap();
+
+        assert!(token.is_slash());
+        assert_eq!(token.to_string(), "/");
+
+        token = super::Token::try_from(&mut scan).unwrap();
+
+        assert!(token.is_slash());
+        assert_eq!(token.to_string(), "/");
+
+        token = super::Token::try_from(&mut scan).unwrap();
+
+        assert!(token.is_text());
+        assert_eq!(token.to_string(), "localhost");
+
+        token = super::Token::try_from(&mut scan).unwrap();
+
+        assert!(token.is_colon());
+        assert_eq!(token.to_string(), ":");
+
+        token = super::Token::try_from(&mut scan).unwrap();
+
+        assert!(token.is_text());
+        assert_eq!(token.to_string(), "3000");
+
+        token = super::Token::try_from(&mut scan).unwrap();
+
+        assert!(token.is_slash());
+        assert_eq!(token.to_string(), "/");
+
+        token = super::Token::try_from(&mut scan).unwrap();
+
+        assert!(token.is_text());
+        assert_eq!(token.to_string(), "test");
+
+        token = super::Token::try_from(&mut scan).unwrap();
+
+        assert!(token.is_interrogate());
+        assert_eq!(token.to_string(), "?");
+
+        token = super::Token::try_from(&mut scan).unwrap();
+
+        assert!(token.is_text());
+        assert_eq!(token.to_string(), "hello");
+
+        token = super::Token::try_from(&mut scan).unwrap();
+
+        assert!(token.is_equals());
+        assert_eq!(token.to_string(), "=");
+
+        token = super::Token::try_from(&mut scan).unwrap();
+
+        assert!(token.is_ident());
+        assert_eq!(token.to_string(), "{world}");
+        assert!(scan.is_eof());
+    }
+}

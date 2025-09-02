@@ -1,0 +1,16 @@
+[package]
+name = "cube-url"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+documentation.workspace = true
+homepage.workspace = true
+repository.workspace = true
+
+[features]
+serde = ["dep:serde", "dep:serde_json"]
+
+[dependencies]
+cube-core = { path = "../cube-core" }
+serde = { workspace = true, optional = true, features = ["derive"] }
+serde_json = { workspace = true, optional = true }

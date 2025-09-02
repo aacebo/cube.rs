@@ -1,0 +1,19 @@
+[workspace]
+resolver = "3"
+members = ["cube", "cube-*", "examples/*"]
+default-members = ["cube", "cube-*"]
+
+[workspace.package]
+version = "0.0.0"
+edition = "2024"
+license = "MIT"
+documentation = "https://www.github.com/aacebo/cube.rs"
+homepage = "https://www.github.com/aacebo/cube.rs"
+repository = "https://www.github.com/aacebo/cube.rs"
+
+[workspace.dependencies]
+bytes = { version = "1" }
+futures-io = { version = "0.3" }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1" }
+serde_json = { version = "1" }

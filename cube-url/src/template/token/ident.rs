@@ -1,0 +1,49 @@
+use std::fmt;
+
+use cube_core::{bytes::Scanner, error::Error};
+
+/// Template Identifier
+///
+/// Example
+/// -------
+/// `https://localhost/users/{user}`
+#[derive(Debug, Clone)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct Ident {
+    pub start: usize,
+    pub end: usize,
+    pub name: String,
+}
+
+impl Ident {
+    #[cfg(feature = "serde")]
+    pub fn to_json(&self) -> String {
+        return serde_json::to_string_pretty(self).unwrap();
+    }
+}
+
+impl TryFrom<&mut Scanner<'_>> for Ident {
+    type Error = Error;
+
+    fn try_from(scan: &mut Scanner<'_>) -> Result<Self, Self::Error> {
+        while !scan.is_eof() && scan.curr() != b'}' {
+            scan.next();
+        }
+
+        if !scan.is_eof() && scan.curr() != b'}' {
+            return Err(Error::from("[cube::url::template] => expected '}'"));
+        }
+
+        return Ok(Self {
+            start: scan.left(),
+            end: scan.right(),
+            name: scan.commit().to_string(),
+        });
+    }
+}
+
+impl fmt::Display for Ident {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        return write!(f, "{}", self.name);
+    }
+}

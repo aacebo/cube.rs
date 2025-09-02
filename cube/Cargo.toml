@@ -1,0 +1,19 @@
+[package]
+name = "cube"
+description = "a performance oriented http server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+documentation.workspace = true
+homepage.workspace = true
+repository.workspace = true
+
+[features]
+tokio = ["cube-http/tokio", "server"]
+client = []
+server = ["cube-http/server"]
+serde = ["cube-http/serde"]
+
+[dependencies]
+cube-core = { path = "../cube-core" }
+cube-http = { path = "../cube-http" }
