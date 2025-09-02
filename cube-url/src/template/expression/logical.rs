@@ -31,7 +31,7 @@ impl Logical {
         let mut expr = Literal::parse(&mut *scan)?;
 
         while scan.curr() == b'|' {
-            let op = Or::try_from(&mut *scan)?;
+            let op = Or::parse(&mut *scan)?;
             let right = Literal::parse(&mut *scan)?;
 
             expr = Expression::Logical(Self {

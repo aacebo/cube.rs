@@ -24,7 +24,7 @@ impl Wildcard {
 
 impl Wildcard {
     pub fn parse(scan: &mut Scanner<'_>) -> Result<Expression, Error> {
-        return Ok(Expression::Wildcard(Self(Asterisk::try_from(scan)?)));
+        return Ok(Expression::Wildcard(Self(Asterisk::parse(scan)?)));
     }
 }
 

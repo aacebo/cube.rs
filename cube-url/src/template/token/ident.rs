@@ -22,10 +22,8 @@ impl Ident {
     }
 }
 
-impl TryFrom<&mut Scanner<'_>> for Ident {
-    type Error = Error;
-
-    fn try_from(scan: &mut Scanner<'_>) -> Result<Self, Self::Error> {
+impl Ident {
+    pub fn parse(scan: &mut Scanner<'_>) -> Result<Self, Error> {
         while !scan.is_eof() && scan.curr() != b'}' {
             scan.next();
         }

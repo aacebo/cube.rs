@@ -1,5 +1,7 @@
 #![allow(unused)]
 
+use std::fmt;
+
 mod token;
 pub(crate) use token::*;
 
@@ -42,6 +44,16 @@ impl Template {
     #[cfg(feature = "serde")]
     pub fn to_json(&self) -> String {
         return serde_json::to_string_pretty(self).unwrap();
+    }
+}
+
+impl fmt::Display for Template {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        for expr in self.0.iter() {
+            write!(f, "{}", expr);
+        }
+
+        return Ok(());
     }
 }
 
@@ -119,5 +131,15 @@ mod test {
         assert!(expr.is_var());
         assert_eq!(expr.to_string(), "{world}");
         assert!(template.0.is_empty());
+    }
+
+    #[test]
+    pub fn should_stringify() {
+        let template = super::Template::new("http://localhost:3000/(a|b)?hello={world}").unwrap();
+
+        assert_eq!(
+            template.to_string(),
+            "http://localhost:3000/(a|b)?hello={world}"
+        );
     }
 }

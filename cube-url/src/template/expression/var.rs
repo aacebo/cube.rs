@@ -27,7 +27,7 @@ impl Var {
 impl Var {
     pub fn parse(scan: &mut Scanner<'_>) -> Result<Expression, Error> {
         return Ok(Expression::Var(Self {
-            name: Ident::try_from(scan)?,
+            name: Ident::parse(scan)?,
         }));
     }
 }

@@ -135,22 +135,20 @@ impl Token {
     }
 }
 
-impl TryFrom<&mut Scanner<'_>> for Token {
-    type Error = Error;
-
-    fn try_from(scan: &mut Scanner<'_>) -> Result<Self, Self::Error> {
+impl Token {
+    pub fn parse(scan: &mut Scanner<'_>) -> Result<Self, Error> {
         return match scan.curr() {
-            b'&' => Ok(Self::Ampersand(Ampersand::try_from(scan)?)),
-            b'*' => Ok(Self::Asterisk(Asterisk::try_from(scan)?)),
-            b':' => Ok(Self::Colon(Colon::try_from(scan)?)),
-            b'=' => Ok(Self::Equals(Equals::try_from(scan)?)),
-            b'!' => Ok(Self::Exclamation(Exclamation::try_from(scan)?)),
-            b'#' => Ok(Self::Hash(Hash::try_from(scan)?)),
-            b'{' => Ok(Self::Ident(Ident::try_from(scan)?)),
-            b'?' => Ok(Self::Interrogate(Interrogate::try_from(scan)?)),
-            b'|' => Ok(Self::Or(Or::try_from(scan)?)),
-            b'/' => Ok(Self::Slash(Slash::try_from(scan)?)),
-            _ => Ok(Self::Text(Text::try_from(scan)?)),
+            b'&' => Ok(Self::Ampersand(Ampersand::parse(scan)?)),
+            b'*' => Ok(Self::Asterisk(Asterisk::parse(scan)?)),
+            b':' => Ok(Self::Colon(Colon::parse(scan)?)),
+            b'=' => Ok(Self::Equals(Equals::parse(scan)?)),
+            b'!' => Ok(Self::Exclamation(Exclamation::parse(scan)?)),
+            b'#' => Ok(Self::Hash(Hash::parse(scan)?)),
+            b'{' => Ok(Self::Ident(Ident::parse(scan)?)),
+            b'?' => Ok(Self::Interrogate(Interrogate::parse(scan)?)),
+            b'|' => Ok(Self::Or(Or::parse(scan)?)),
+            b'/' => Ok(Self::Slash(Slash::parse(scan)?)),
+            _ => Ok(Self::Text(Text::parse(scan)?)),
         };
     }
 }
@@ -180,67 +178,67 @@ mod test {
     #[test]
     pub fn should_parse() {
         let mut scan = Scanner::from("http://localhost:3000/test?hello={world}");
-        let mut token = super::Token::try_from(&mut scan).unwrap();
+        let mut token = super::Token::parse(&mut scan).unwrap();
 
         assert!(token.is_text());
         assert_eq!(token.to_string(), "http");
 
-        token = super::Token::try_from(&mut scan).unwrap();
+        token = super::Token::parse(&mut scan).unwrap();
 
         assert!(token.is_colon());
         assert_eq!(token.to_string(), ":");
 
-        token = super::Token::try_from(&mut scan).unwrap();
+        token = super::Token::parse(&mut scan).unwrap();
 
         assert!(token.is_slash());
         assert_eq!(token.to_string(), "/");
 
-        token = super::Token::try_from(&mut scan).unwrap();
+        token = super::Token::parse(&mut scan).unwrap();
 
         assert!(token.is_slash());
         assert_eq!(token.to_string(), "/");
 
-        token = super::Token::try_from(&mut scan).unwrap();
+        token = super::Token::parse(&mut scan).unwrap();
 
         assert!(token.is_text());
         assert_eq!(token.to_string(), "localhost");
 
-        token = super::Token::try_from(&mut scan).unwrap();
+        token = super::Token::parse(&mut scan).unwrap();
 
         assert!(token.is_colon());
         assert_eq!(token.to_string(), ":");
 
-        token = super::Token::try_from(&mut scan).unwrap();
+        token = super::Token::parse(&mut scan).unwrap();
 
         assert!(token.is_text());
         assert_eq!(token.to_string(), "3000");
 
-        token = super::Token::try_from(&mut scan).unwrap();
+        token = super::Token::parse(&mut scan).unwrap();
 
         assert!(token.is_slash());
         assert_eq!(token.to_string(), "/");
 
-        token = super::Token::try_from(&mut scan).unwrap();
+        token = super::Token::parse(&mut scan).unwrap();
 
         assert!(token.is_text());
         assert_eq!(token.to_string(), "test");
 
-        token = super::Token::try_from(&mut scan).unwrap();
+        token = super::Token::parse(&mut scan).unwrap();
 
         assert!(token.is_interrogate());
         assert_eq!(token.to_string(), "?");
 
-        token = super::Token::try_from(&mut scan).unwrap();
+        token = super::Token::parse(&mut scan).unwrap();
 
         assert!(token.is_text());
         assert_eq!(token.to_string(), "hello");
 
-        token = super::Token::try_from(&mut scan).unwrap();
+        token = super::Token::parse(&mut scan).unwrap();
 
         assert!(token.is_equals());
         assert_eq!(token.to_string(), "=");
 
-        token = super::Token::try_from(&mut scan).unwrap();
+        token = super::Token::parse(&mut scan).unwrap();
 
         assert!(token.is_ident());
         assert_eq!(token.to_string(), "{world}");

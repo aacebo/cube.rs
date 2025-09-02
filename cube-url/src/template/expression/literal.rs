@@ -31,7 +31,7 @@ impl Literal {
 
 impl Literal {
     pub fn parse(scan: &mut Scanner<'_>) -> Result<Expression, Error> {
-        return Ok(Expression::Literal(Self(Token::try_from(scan)?)));
+        return Ok(Expression::Literal(Self(Token::parse(scan)?)));
     }
 }
 

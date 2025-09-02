@@ -17,10 +17,8 @@ impl Text {
     }
 }
 
-impl TryFrom<&mut Scanner<'_>> for Text {
-    type Error = Error;
-
-    fn try_from(scan: &mut Scanner<'_>) -> Result<Self, Self::Error> {
+impl Text {
+    pub fn parse(scan: &mut Scanner<'_>) -> Result<Self, Error> {
         while !scan.is_eof() && scan.peek().unwrap_or(0).is_ascii_alphanumeric() {
             scan.next();
         }

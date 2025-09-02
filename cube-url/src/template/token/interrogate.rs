@@ -21,10 +21,8 @@ impl Interrogate {
     }
 }
 
-impl TryFrom<&mut Scanner<'_>> for Interrogate {
-    type Error = Error;
-
-    fn try_from(scan: &mut Scanner<'_>) -> Result<Self, Self::Error> {
+impl Interrogate {
+    pub fn parse(scan: &mut Scanner<'_>) -> Result<Self, Error> {
         if scan.curr() != b'?' {
             return Err(Error::from("[cube::url::template] => expected '?'"));
         }
