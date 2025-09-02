@@ -12,6 +12,7 @@ use crate::Url;
 
 /// https://datatracker.ietf.org/doc/html/rfc6570
 #[derive(Debug, Clone)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Template(Vec<Expression>);
 
 impl Template {
@@ -36,6 +37,11 @@ impl Template {
         }
 
         return Ok(uri);
+    }
+
+    #[cfg(feature = "serde")]
+    pub fn to_json(&self) -> String {
+        return serde_json::to_string_pretty(self).unwrap();
     }
 }
 
