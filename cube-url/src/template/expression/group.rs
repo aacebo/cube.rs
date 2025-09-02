@@ -4,6 +4,11 @@ use cube_core::{bytes::Scanner, error::Error};
 
 use crate::{Url, template::Expression};
 
+/// Template Group
+///
+/// Example
+/// -------
+/// `http://localhost/api/users/(a|b)`
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Group(Vec<Expression>);

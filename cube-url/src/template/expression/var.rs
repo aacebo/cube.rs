@@ -7,6 +7,11 @@ use crate::{
     template::{Expression, Ident},
 };
 
+/// Template Variable
+///
+/// Example
+/// -------
+/// `http://localhost/api/users/{user}`
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Var {

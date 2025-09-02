@@ -7,6 +7,11 @@ use crate::{
     template::{Expression, Token},
 };
 
+/// Template Literal
+///
+/// Example
+/// -------
+/// `http://localhost/api/users/1`
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Literal(Token);

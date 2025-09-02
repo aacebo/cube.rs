@@ -7,6 +7,11 @@ use crate::{
     template::{Expression, Literal, Or},
 };
 
+/// Template Logical
+///
+/// Example
+/// -------
+/// `http://localhost/api/users/(a|b)`
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Logical {

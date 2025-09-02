@@ -7,6 +7,11 @@ use crate::{
     template::{Asterisk, Expression, Ident},
 };
 
+/// Template Wildcard
+///
+/// Example
+/// -------
+/// `http://*/api/users`
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Wildcard(Asterisk);
