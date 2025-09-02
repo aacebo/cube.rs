@@ -30,11 +30,6 @@ pub enum Expression {
 }
 
 impl Expression {
-    pub fn new(pattern: &str) -> Result<Self, Error> {
-        let mut scan = Scanner::from(pattern);
-        return Self::parse(&mut scan);
-    }
-
     pub fn is_var(&self) -> bool {
         return match self {
             Self::Var(_) => true,
@@ -87,7 +82,7 @@ impl Expression {
 }
 
 impl Expression {
-    fn parse(scan: &mut Scanner<'_>) -> Result<Self, Error> {
+    pub fn parse(scan: &mut Scanner<'_>) -> Result<Self, Error> {
         return match scan.curr() {
             b'{' => Ok(Var::parse(scan)?),
             b'(' => Ok(Group::parse(scan)?),

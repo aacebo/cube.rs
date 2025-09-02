@@ -6,7 +6,7 @@ pub(crate) use token::*;
 mod expression;
 pub(crate) use expression::*;
 
-use cube_core::error::Error;
+use cube_core::{bytes::Scanner, error::Error};
 
 use crate::Url;
 
@@ -16,11 +16,11 @@ pub struct Template(Vec<Expression>);
 
 impl Template {
     pub fn new(pattern: &str) -> Result<Self, Error> {
+        let mut scan = Scanner::from("http://localhost:3000/(a|b)?hello={world}");
         let mut expressions = Vec::<Expression>::new();
-        let parts = pattern.split("/");
 
-        for part in parts {
-            expressions.push(Expression::new(part)?);
+        while !scan.is_eof() {
+            expressions.push(Expression::parse(&mut scan)?);
         }
 
         return Ok(Self(expressions));
@@ -36,5 +36,82 @@ impl Template {
         }
 
         return Ok(uri);
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use cube_core::bytes::Scanner;
+
+    #[test]
+    pub fn should_parse() {
+        let mut template =
+            super::Template::new("http://localhost:3000/(a|b)?hello={world}").unwrap();
+        template.0.reverse();
+        let mut expr = template.0.pop().unwrap();
+
+        assert!(expr.is_literal());
+        assert_eq!(expr.to_string(), "http");
+
+        expr = template.0.pop().unwrap();
+
+        assert!(expr.is_literal());
+        assert_eq!(expr.to_string(), ":");
+
+        expr = template.0.pop().unwrap();
+
+        assert!(expr.is_literal());
+        assert_eq!(expr.to_string(), "/");
+
+        expr = template.0.pop().unwrap();
+
+        assert!(expr.is_literal());
+        assert_eq!(expr.to_string(), "/");
+
+        expr = template.0.pop().unwrap();
+
+        assert!(expr.is_literal());
+        assert_eq!(expr.to_string(), "localhost");
+
+        expr = template.0.pop().unwrap();
+
+        assert!(expr.is_literal());
+        assert_eq!(expr.to_string(), ":");
+
+        expr = template.0.pop().unwrap();
+
+        assert!(expr.is_literal());
+        assert_eq!(expr.to_string(), "3000");
+
+        expr = template.0.pop().unwrap();
+
+        assert!(expr.is_literal());
+        assert_eq!(expr.to_string(), "/");
+
+        expr = template.0.pop().unwrap();
+
+        assert!(expr.is_group());
+        assert_eq!(expr.to_string(), "(a|b)");
+
+        expr = template.0.pop().unwrap();
+
+        assert!(expr.is_literal());
+        assert_eq!(expr.to_string(), "?");
+
+        expr = template.0.pop().unwrap();
+
+        assert!(expr.is_literal());
+        assert_eq!(expr.to_string(), "hello");
+
+        expr = template.0.pop().unwrap();
+
+        assert!(expr.is_literal());
+        assert_eq!(expr.to_string(), "=");
+
+        expr = template.0.pop().unwrap();
+
+        assert!(expr.is_var());
+        assert_eq!(expr.to_string(), "{world}");
+        assert!(template.0.is_empty());
     }
 }
