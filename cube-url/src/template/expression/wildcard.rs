@@ -4,7 +4,7 @@ use cube_core::{bytes::Scanner, error::Error};
 
 use crate::{
     Url,
-    template::{Asterisk, Expression, Ident},
+    template::{Asterisk, Expression, Ident, Logical},
 };
 
 /// Template Wildcard
@@ -33,19 +33,19 @@ impl Wildcard {
 
 impl Wildcard {
     pub fn parse(scan: &mut Scanner<'_>) -> Result<Expression, Error> {
-        let mut expr = Expression::parse(&mut *scan)?;
+        let mut expr = Logical::parse(&mut *scan)?;
 
         while scan.curr() == b'*' {
-            let op = Asterisk::parse(&mut *scan)?;
+            let token = Asterisk::parse(&mut *scan)?;
             let mut right: Option<Box<Expression>> = None;
 
             if !scan.is_eof() {
-                right = Some(Box::new(Expression::parse(&mut *scan)?));
+                right = Some(Box::new(Logical::parse(&mut *scan)?));
             }
 
             expr = Expression::Wildcard(Self {
                 left: Some(Box::new(expr)),
-                token: Asterisk::parse(scan)?,
+                token,
                 right,
             });
         }

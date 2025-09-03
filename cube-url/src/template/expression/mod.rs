@@ -86,8 +86,7 @@ impl Expression {
         return match scan.curr() {
             b'{' => Ok(Var::parse(scan)?),
             b'(' => Ok(Group::parse(scan)?),
-            b'*' => Ok(Wildcard::parse(scan)?),
-            _ => Ok(Logical::parse(scan)?),
+            _ => Ok(Wildcard::parse(scan)?),
         };
     }
 }
@@ -110,7 +109,7 @@ mod test {
 
     #[test]
     pub fn should_parse() {
-        let mut scan = Scanner::from("http://localhost:3000/(a|b)?hello={world}");
+        let mut scan = Scanner::from("http://localhost:*/(a|b)?hello={world}");
         let mut expr = super::Expression::parse(&mut scan).unwrap();
 
         assert!(expr.is_literal());
@@ -138,18 +137,8 @@ mod test {
 
         expr = super::Expression::parse(&mut scan).unwrap();
 
-        assert!(expr.is_literal());
-        assert_eq!(expr.to_string(), ":");
-
-        expr = super::Expression::parse(&mut scan).unwrap();
-
-        assert!(expr.is_literal());
-        assert_eq!(expr.to_string(), "3000");
-
-        expr = super::Expression::parse(&mut scan).unwrap();
-
-        assert!(expr.is_literal());
-        assert_eq!(expr.to_string(), "/");
+        assert!(expr.is_wildcard());
+        assert_eq!(expr.to_string(), ":*/");
 
         expr = super::Expression::parse(&mut scan).unwrap();
 
