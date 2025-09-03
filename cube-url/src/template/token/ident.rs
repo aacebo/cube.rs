@@ -26,25 +26,33 @@ impl Ident {
 
 impl Ident {
     pub fn parse(scan: &mut Scanner<'_>) -> Result<Self, Error> {
-        while !scan.is_eof() && scan.curr() != b'}' {
+        if scan.curr() != b'{' {
+            return Err(Error::from("[cube::url::template] => expected '{'"));
+        }
+
+        scan.fshift(1);
+
+        while !scan.is_eof() && scan.peek() != Some(b'}') {
             scan.next();
         }
 
-        if !scan.is_eof() && scan.curr() != b'}' {
+        if !scan.is_eof() && scan.peek() != Some(b'}') {
             return Err(Error::from("[cube::url::template] => expected '}'"));
         }
 
-        return Ok(Self {
-            start: scan.left(),
-            end: scan.right(),
-            name: scan.commit().to_string(),
-        });
+        let start = scan.left();
+        let end = scan.right();
+        let name = scan.commit().to_string();
+
+        scan.fshift(1);
+
+        return Ok(Self { start, end, name });
     }
 }
 
 impl fmt::Display for Ident {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        return write!(f, "{}", self.name);
+        return write!(f, "{{{}}}", self.name);
     }
 }
 

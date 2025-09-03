@@ -11,7 +11,9 @@ use crate::{
 ///
 /// Example
 /// -------
-/// `http://localhost/api/users/{user}`
+/// `http://localhost/api/users/{user}/posts`
+/// vs
+/// `http://localhost/api/users/1234567/posts`
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Var {
@@ -20,6 +22,7 @@ pub struct Var {
 
 impl Var {
     pub fn eval(&self, text: &str, url: &mut Url) -> Result<(), Error> {
+        url.params.set(&self.name.name, text);
         return Ok(());
     }
 

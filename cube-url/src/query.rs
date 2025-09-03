@@ -35,8 +35,8 @@ impl Query {
         return self.data.get_mut(name);
     }
 
-    pub fn set(&mut self, name: &str, value: &String) {
-        self.data.insert(name.to_string(), value.clone());
+    pub fn set(&mut self, name: &str, value: &str) {
+        self.data.insert(name.to_string(), String::from(value));
     }
 
     pub fn del(&mut self, name: &str) {

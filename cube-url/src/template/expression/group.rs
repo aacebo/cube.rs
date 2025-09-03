@@ -31,6 +31,11 @@ impl Group {
 impl Group {
     pub fn parse(scan: &mut Scanner<'_>) -> Result<Expression, Error> {
         let mut expressions = Vec::<Expression>::new();
+
+        if scan.curr() != b'(' {
+            return Err(Error::from("[cube::url::template] => expected '('"));
+        }
+
         scan.fshift(1);
 
         while !scan.is_eof() && scan.curr() != b')' {
