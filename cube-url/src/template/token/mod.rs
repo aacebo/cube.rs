@@ -129,6 +129,42 @@ impl Token {
         };
     }
 
+    pub fn len(&self) -> usize {
+        return (self.end() - self.start()) + 1;
+    }
+
+    pub fn start(&self) -> usize {
+        return match self {
+            Self::Ampersand(v) => v.start,
+            Self::Asterisk(v) => v.start,
+            Self::Colon(v) => v.start,
+            Self::Equals(v) => v.start,
+            Self::Exclamation(v) => v.start,
+            Self::Hash(v) => v.start,
+            Self::Ident(v) => v.start,
+            Self::Interrogate(v) => v.start,
+            Self::Pipe(v) => v.start,
+            Self::Slash(v) => v.start,
+            Self::Text(v) => v.start,
+        };
+    }
+
+    pub fn end(&self) -> usize {
+        return match self {
+            Self::Ampersand(v) => v.end,
+            Self::Asterisk(v) => v.end,
+            Self::Colon(v) => v.end,
+            Self::Equals(v) => v.end,
+            Self::Exclamation(v) => v.end,
+            Self::Hash(v) => v.end,
+            Self::Ident(v) => v.end,
+            Self::Interrogate(v) => v.end,
+            Self::Pipe(v) => v.end,
+            Self::Slash(v) => v.end,
+            Self::Text(v) => v.end,
+        };
+    }
+
     #[cfg(feature = "serde")]
     pub fn to_json(&self) -> String {
         return serde_json::to_string_pretty(self).unwrap();

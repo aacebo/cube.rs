@@ -106,6 +106,22 @@ impl<'a> Scanner<'a> {
         };
     }
 
+    /// move forward n times
+    pub fn next_n(&mut self, n: usize) -> Option<u8> {
+        for _ in 0..n {
+            self.right += 1;
+
+            if self.is_eof() {
+                return None;
+            }
+        }
+
+        return match self.data.as_bytes().get(self.right) {
+            None => None,
+            Some(v) => Some(*v),
+        };
+    }
+
     /// move forward if a given byte
     /// matches the current byte
     pub fn next_if(&mut self, byte: u8) -> bool {
@@ -127,15 +143,15 @@ impl<'a> Scanner<'a> {
 
     /// move forward if the next N bytes match
     /// a given sequence of bytes
-    pub fn next_if_bytes<const N: usize>(&mut self, bytes: &[u8; N]) -> bool {
+    pub fn next_if_bytes(&mut self, bytes: &[u8]) -> bool {
         if self.is_eof() {
             return false;
         }
 
-        if let Some(v) = self.peek_n(N - 1)
+        if let Some(v) = self.peek_n(bytes.len() - 1)
             && v.as_bytes() == bytes
         {
-            self.skip(N - 1);
+            self.skip(bytes.len() - 1);
             return true;
         }
 
@@ -181,7 +197,7 @@ impl<'a> Scanner<'a> {
 
     /// move forward until you find a given
     /// sequence of bytes
-    pub fn next_until_bytes<const N: usize>(&mut self, bytes: &[u8; N]) -> &mut Self {
+    pub fn next_until_bytes(&mut self, bytes: &[u8]) -> &mut Self {
         if self.is_eof() {
             return self;
         }
@@ -191,7 +207,7 @@ impl<'a> Scanner<'a> {
 
         while !iter.is_eof() {
             if iter.curr() == bytes[0] {
-                if let Some(v) = iter.peek_n(N - 1)
+                if let Some(v) = iter.peek_n(bytes.len() - 1)
                     && v.as_bytes() == bytes
                 {
                     self.right = iter.left - 1;
@@ -216,6 +232,12 @@ impl<'a> Scanner<'a> {
             self.next();
         }
 
+        return self;
+    }
+
+    /// move forward until end of input
+    pub fn next_until_end(&mut self) -> &mut Self {
+        self.right = self.data.len() - 1;
         return self;
     }
 
