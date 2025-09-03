@@ -4,7 +4,7 @@ use cube_core::{bytes::Scanner, error::Error};
 
 use crate::{
     Url,
-    template::{Expression, Literal, Or},
+    template::{Expression, Literal, Pipe},
 };
 
 /// Template Logical
@@ -16,7 +16,7 @@ use crate::{
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Logical {
     left: Box<Expression>,
-    op: Or,
+    op: Pipe,
     right: Box<Expression>,
 }
 
@@ -36,7 +36,7 @@ impl Logical {
         let mut expr = Literal::parse(&mut *scan)?;
 
         while scan.curr() == b'|' {
-            let op = Or::parse(&mut *scan)?;
+            let op = Pipe::parse(&mut *scan)?;
             let right = Literal::parse(&mut *scan)?;
 
             expr = Expression::Logical(Self {

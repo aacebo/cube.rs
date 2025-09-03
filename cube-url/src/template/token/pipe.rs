@@ -9,19 +9,19 @@ use cube_core::{bytes::Scanner, error::Error};
 /// `|`
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct Or {
+pub struct Pipe {
     pub start: usize,
     pub end: usize,
 }
 
-impl Or {
+impl Pipe {
     #[cfg(feature = "serde")]
     pub fn to_json(&self) -> String {
         return serde_json::to_string_pretty(self).unwrap();
     }
 }
 
-impl Or {
+impl Pipe {
     pub fn parse(scan: &mut Scanner<'_>) -> Result<Self, Error> {
         if scan.curr() != b'|' {
             return Err(Error::from("[cube::url::template] => expected '|'"));
@@ -35,7 +35,7 @@ impl Or {
     }
 }
 
-impl fmt::Display for Or {
+impl fmt::Display for Pipe {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         return write!(f, "|");
     }

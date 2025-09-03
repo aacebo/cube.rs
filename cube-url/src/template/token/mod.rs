@@ -30,8 +30,8 @@ pub(crate) use equals::*;
 mod exclamation;
 pub(crate) use exclamation::*;
 
-mod or;
-pub(crate) use or::*;
+mod pipe;
+pub(crate) use pipe::*;
 
 use cube_core::{bytes::Scanner, error::Error};
 
@@ -46,7 +46,7 @@ pub enum Token {
     Hash(Hash),
     Ident(Ident),
     Interrogate(Interrogate),
-    Or(Or),
+    Pipe(Pipe),
     Slash(Slash),
     Text(Text),
 }
@@ -108,9 +108,9 @@ impl Token {
         };
     }
 
-    pub fn is_or(&self) -> bool {
+    pub fn is_pipe(&self) -> bool {
         return match self {
-            Self::Or(_) => true,
+            Self::Pipe(_) => true,
             _ => false,
         };
     }
@@ -146,7 +146,7 @@ impl Token {
             b'#' => Ok(Self::Hash(Hash::parse(scan)?)),
             b'{' => Ok(Self::Ident(Ident::parse(scan)?)),
             b'?' => Ok(Self::Interrogate(Interrogate::parse(scan)?)),
-            b'|' => Ok(Self::Or(Or::parse(scan)?)),
+            b'|' => Ok(Self::Pipe(Pipe::parse(scan)?)),
             b'/' => Ok(Self::Slash(Slash::parse(scan)?)),
             _ => Ok(Self::Text(Text::parse(scan)?)),
         };
@@ -164,7 +164,7 @@ impl fmt::Display for Token {
             Self::Hash(v) => write!(f, "{}", v),
             Self::Ident(v) => write!(f, "{}", v),
             Self::Interrogate(v) => write!(f, "{}", v),
-            Self::Or(v) => write!(f, "{}", v),
+            Self::Pipe(v) => write!(f, "{}", v),
             Self::Slash(v) => write!(f, "{}", v),
             Self::Text(v) => write!(f, "{}", v),
         };

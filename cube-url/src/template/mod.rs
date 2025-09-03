@@ -18,8 +18,8 @@ use crate::Url;
 pub struct Template(Vec<Expression>);
 
 impl Template {
-    pub fn new(pattern: &str) -> Result<Self, Error> {
-        let mut scan = Scanner::from("http://localhost:3000/(a|b)?hello={world}");
+    pub fn parse(pattern: &str) -> Result<Self, Error> {
+        let mut scan = Scanner::from(pattern);
         let mut expressions = Vec::<Expression>::new();
 
         while !scan.is_eof() {
@@ -29,7 +29,7 @@ impl Template {
         return Ok(Self(expressions));
     }
 
-    pub fn parse(&self, url: &str) -> Result<Url, Error> {
+    pub fn eval(&self, url: &str) -> Result<Url, Error> {
         let mut uri = Url::parse(url)?;
         let path = uri.path.clone();
         let parts = path.split("/").filter(|v| !v.is_empty());
@@ -64,7 +64,7 @@ mod test {
     #[test]
     pub fn should_parse() {
         let mut template =
-            super::Template::new("http://localhost:3000/(a|b)?hello={world}").unwrap();
+            super::Template::parse("http://localhost:3000/(a|b)?hello={world}").unwrap();
         template.0.reverse();
         let mut expr = template.0.pop().unwrap();
 
@@ -135,7 +135,7 @@ mod test {
 
     #[test]
     pub fn should_stringify() {
-        let template = super::Template::new("http://localhost:3000/(a|b)?hello={world}").unwrap();
+        let template = super::Template::parse("http://localhost:3000/(a|b)?hello={world}").unwrap();
 
         assert_eq!(
             template.to_string(),
