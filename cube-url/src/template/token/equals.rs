@@ -2,6 +2,8 @@ use std::fmt;
 
 use cube_core::{bytes::Scanner, error::Error};
 
+use crate::template::Token;
+
 /// Template Equals
 ///
 /// Example
@@ -38,5 +40,14 @@ impl Equals {
 impl fmt::Display for Equals {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         return write!(f, "=");
+    }
+}
+
+impl PartialEq<Token> for Equals {
+    fn eq(&self, other: &Token) -> bool {
+        return match other {
+            Token::Equals(_) => true,
+            _ => false,
+        };
     }
 }

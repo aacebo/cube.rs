@@ -2,6 +2,8 @@ use std::fmt;
 
 use cube_core::{bytes::Scanner, error::Error};
 
+use crate::template::Token;
+
 /// Template Exclamation
 ///
 /// Example
@@ -38,5 +40,14 @@ impl Exclamation {
 impl fmt::Display for Exclamation {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         return write!(f, "!");
+    }
+}
+
+impl PartialEq<Token> for Exclamation {
+    fn eq(&self, other: &Token) -> bool {
+        return match other {
+            Token::Exclamation(_) => true,
+            _ => false,
+        };
     }
 }

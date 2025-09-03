@@ -2,6 +2,8 @@ use std::fmt;
 
 use cube_core::{bytes::Scanner, error::Error};
 
+use crate::template::Token;
+
 /// Template Identifier
 ///
 /// Example
@@ -43,5 +45,14 @@ impl Ident {
 impl fmt::Display for Ident {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         return write!(f, "{}", self.name);
+    }
+}
+
+impl PartialEq<Token> for Ident {
+    fn eq(&self, other: &Token) -> bool {
+        return match other {
+            Token::Ident(v) => v.name == self.name,
+            _ => false,
+        };
     }
 }

@@ -2,6 +2,8 @@ use std::fmt;
 
 use cube_core::{bytes::Scanner, error::Error};
 
+use crate::template::Token;
+
 /// Template Ampersand
 ///
 /// Example
@@ -38,5 +40,14 @@ impl Ampersand {
 impl fmt::Display for Ampersand {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         return write!(f, "&");
+    }
+}
+
+impl PartialEq<Token> for Ampersand {
+    fn eq(&self, other: &Token) -> bool {
+        return match other {
+            Token::Ampersand(_) => true,
+            _ => false,
+        };
     }
 }

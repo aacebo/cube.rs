@@ -2,6 +2,8 @@ use std::fmt;
 
 use cube_core::{bytes::Scanner, error::Error};
 
+use crate::template::Token;
+
 /// Template Slash
 ///
 /// Example
@@ -38,5 +40,14 @@ impl Slash {
 impl fmt::Display for Slash {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         return write!(f, "/");
+    }
+}
+
+impl PartialEq<Token> for Slash {
+    fn eq(&self, other: &Token) -> bool {
+        return match other {
+            Token::Slash(_) => true,
+            _ => false,
+        };
     }
 }

@@ -2,6 +2,8 @@ use std::fmt;
 
 use cube_core::{bytes::Scanner, error::Error};
 
+use crate::template::Token;
+
 /// Template Asterisk
 ///
 /// Example
@@ -38,5 +40,14 @@ impl Asterisk {
 impl fmt::Display for Asterisk {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         return write!(f, "*");
+    }
+}
+
+impl PartialEq<Token> for Asterisk {
+    fn eq(&self, other: &Token) -> bool {
+        return match other {
+            Token::Asterisk(_) => true,
+            _ => false,
+        };
     }
 }

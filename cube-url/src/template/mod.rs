@@ -63,8 +63,7 @@ mod test {
 
     #[test]
     pub fn should_parse() {
-        let mut template =
-            super::Template::parse("http://localhost:3000/(a|b)?hello={world}").unwrap();
+        let mut template = super::Template::parse("http://*lh*:3000/(a|b)?hello={world}").unwrap();
         template.0.reverse();
         let mut expr = template.0.pop().unwrap();
 
@@ -83,18 +82,8 @@ mod test {
 
         expr = template.0.pop().unwrap();
 
-        assert!(expr.is_literal());
-        assert_eq!(expr.to_string(), "/");
-
-        expr = template.0.pop().unwrap();
-
-        assert!(expr.is_literal());
-        assert_eq!(expr.to_string(), "localhost");
-
-        expr = template.0.pop().unwrap();
-
-        assert!(expr.is_literal());
-        assert_eq!(expr.to_string(), ":");
+        assert!(expr.is_wildcard());
+        assert_eq!(expr.to_string(), "/*lh*:");
 
         expr = template.0.pop().unwrap();
 

@@ -2,6 +2,8 @@ use std::fmt;
 
 use cube_core::{bytes::Scanner, error::Error};
 
+use crate::template::Token;
+
 /// Template Colon
 ///
 /// Example
@@ -38,5 +40,14 @@ impl Colon {
 impl fmt::Display for Colon {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         return write!(f, ":");
+    }
+}
+
+impl PartialEq<Token> for Colon {
+    fn eq(&self, other: &Token) -> bool {
+        return match other {
+            Token::Colon(_) => true,
+            _ => false,
+        };
     }
 }

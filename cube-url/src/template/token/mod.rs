@@ -171,6 +171,24 @@ impl fmt::Display for Token {
     }
 }
 
+impl PartialEq for Token {
+    fn eq(&self, other: &Self) -> bool {
+        return match self {
+            Self::Ampersand(v) => v.eq(other),
+            Self::Asterisk(v) => v.eq(other),
+            Self::Colon(v) => v.eq(other),
+            Self::Equals(v) => v.eq(other),
+            Self::Exclamation(v) => v.eq(other),
+            Self::Hash(v) => v.eq(other),
+            Self::Ident(v) => v.eq(other),
+            Self::Interrogate(v) => v.eq(other),
+            Self::Pipe(v) => v.eq(other),
+            Self::Slash(v) => v.eq(other),
+            Self::Text(v) => v.eq(other),
+        };
+    }
+}
+
 #[cfg(test)]
 mod test {
     use cube_core::bytes::Scanner;

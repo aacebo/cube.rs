@@ -2,6 +2,8 @@ use std::fmt;
 
 use cube_core::{bytes::Scanner, error::Error};
 
+use crate::template::Token;
+
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Text {
@@ -34,5 +36,14 @@ impl Text {
 impl fmt::Display for Text {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         return write!(f, "{}", self.value);
+    }
+}
+
+impl PartialEq<Token> for Text {
+    fn eq(&self, other: &Token) -> bool {
+        return match other {
+            Token::Text(v) => v.value == self.value,
+            _ => false,
+        };
     }
 }

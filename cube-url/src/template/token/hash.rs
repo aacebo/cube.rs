@@ -2,6 +2,8 @@ use std::fmt;
 
 use cube_core::{bytes::Scanner, error::Error};
 
+use crate::template::Token;
+
 /// Template Hash
 ///
 /// Example
@@ -38,5 +40,14 @@ impl Hash {
 impl fmt::Display for Hash {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         return write!(f, "#");
+    }
+}
+
+impl PartialEq<Token> for Hash {
+    fn eq(&self, other: &Token) -> bool {
+        return match other {
+            Token::Hash(_) => true,
+            _ => false,
+        };
     }
 }
