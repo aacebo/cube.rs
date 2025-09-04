@@ -1,4 +1,4 @@
-use std::collections::{BTreeMap, btree_map};
+use std::collections::{BTreeMap, HashMap, btree_map};
 
 use crate::Header;
 
@@ -50,6 +50,18 @@ impl IntoIterator for Headers {
 
     fn into_iter(self) -> Self::IntoIter {
         return self.data.into_iter();
+    }
+}
+
+impl From<&HashMap<String, String>> for Headers {
+    fn from(value: &HashMap<String, String>) -> Self {
+        let mut headers = BTreeMap::<String, Header>::new();
+
+        for (key, value) in value {
+            headers.insert(key.clone(), Header::Raw(value.clone()));
+        }
+
+        return Self { data: headers };
     }
 }
 

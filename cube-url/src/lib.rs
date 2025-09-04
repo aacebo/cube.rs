@@ -47,6 +47,10 @@ impl Url {
         return &self.host;
     }
 
+    pub fn base(&self) -> String {
+        return format!("{}://{}", self.protocol, self.host);
+    }
+
     pub fn port(&self) -> Option<u16> {
         return match self.port {
             None => None,
@@ -54,7 +58,7 @@ impl Url {
         };
     }
 
-    pub fn path(&self) -> &String {
+    pub fn path(&self) -> &str {
         return &self.path;
     }
 

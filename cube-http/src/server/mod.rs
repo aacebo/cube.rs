@@ -5,8 +5,6 @@ pub mod router;
 mod request;
 pub use request::*;
 
-use cube_url::Url;
-
 use crate::{RequestMessage, ResponseMessage};
 
 pub struct Server;
@@ -24,7 +22,15 @@ impl Server {
     }
 
     fn on_connect(mut stream: net::TcpStream, _: net::SocketAddr) {
-        let request = match RequestMessage::read(&stream) {
+        let message = match RequestMessage::read(&stream) {
+            Err(err) => {
+                println!("{}", err);
+                return;
+            }
+            Ok(v) => v,
+        };
+
+        let request = match Request::<String>::try_from(&message) {
             Err(err) => {
                 println!("{}", err);
                 return;
@@ -33,21 +39,10 @@ impl Server {
         };
 
         println!("{}", request);
-        let string_url = format!(
-            "{}://{}{}",
-            request.protocol,
-            &request.headers.get("Host").unwrap(),
-            &request.path,
-        );
-
-        let url = Url::parse(&string_url).unwrap();
-
-        println!("{}", string_url);
-        println!("{}", url.to_json());
 
         let response = ResponseMessage {
-            protocol: request.protocol,
-            protocol_v: request.protocol_v,
+            protocol: message.protocol,
+            protocol_v: message.protocol_v,
             status: crate::Status::Ok,
             headers: HashMap::new(),
         };

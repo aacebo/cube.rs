@@ -12,8 +12,9 @@ repository.workspace = true
 tokio = ["cube-http/tokio", "server"]
 client = []
 server = ["cube-http/server"]
-serde = ["cube-http/serde"]
+serde = ["cube-http/serde", "cube-url/serde"]
 
 [dependencies]
 cube-core = { path = "../cube-core" }
 cube-http = { path = "../cube-http" }
+cube-url = { path = "../cube-url" }
