@@ -139,7 +139,7 @@ mod test {
         assert_eq!(url.params.get("org_id").unwrap(), "test");
 
         url = template
-            .eval("http://localhost:3000/users/1234/orgs/myorgid")
+            .eval("http://google:3000/users/1234/orgs/myorgid")
             .unwrap();
 
         assert_eq!(url.params.get("user").unwrap(), "1234");
