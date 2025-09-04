@@ -25,12 +25,18 @@ impl Params {
         return self.data.contains_key(name);
     }
 
-    pub fn get(&self, name: &str) -> Option<&String> {
-        return self.data.get(name);
+    pub fn get(&self, name: &str) -> Option<&str> {
+        return match self.data.get(name) {
+            None => None,
+            Some(v) => Some(v),
+        };
     }
 
-    pub fn get_mut(&mut self, name: &str) -> Option<&mut String> {
-        return self.data.get_mut(name);
+    pub fn get_mut(&mut self, name: &str) -> Option<&mut str> {
+        return match self.data.get_mut(name) {
+            None => None,
+            Some(v) => Some(v),
+        };
     }
 
     pub fn set(&mut self, name: &str, value: &str) {
