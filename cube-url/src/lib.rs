@@ -108,3 +108,13 @@ impl Url {
         });
     }
 }
+
+#[cfg(test)]
+mod test {
+    #[test]
+    pub fn should_parse_query() {
+        let url = super::Url::parse("http://localhost/users?hello=world&a=bcd").unwrap();
+        assert_eq!(url.query.get("hello").unwrap(), "world");
+        assert_eq!(url.query.get("a").unwrap(), "bcd");
+    }
+}
