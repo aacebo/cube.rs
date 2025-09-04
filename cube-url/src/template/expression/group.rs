@@ -14,9 +14,27 @@ use crate::{Url, template::Expression};
 pub struct Group(Vec<Expression>);
 
 impl Group {
-    pub fn eval(&self, text: &str, url: &mut Url) -> Result<(), Error> {
+    pub fn len(&self) -> usize {
+        return (self.end() - self.start()) + 1;
+    }
+
+    pub fn start(&self) -> usize {
+        return match self.0.first() {
+            None => 0,
+            Some(v) => v.start(),
+        };
+    }
+
+    pub fn end(&self) -> usize {
+        return match self.0.last() {
+            None => 0,
+            Some(v) => v.end(),
+        };
+    }
+
+    pub fn eval(&self, scan: &mut Scanner<'_>, url: &mut Url) -> Result<(), Error> {
         for expr in self.0.iter() {
-            expr.eval(text, url)?;
+            expr.eval(scan, url)?;
         }
 
         return Ok(());

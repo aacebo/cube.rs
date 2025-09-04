@@ -31,11 +31,10 @@ impl Template {
 
     pub fn eval(&self, url: &str) -> Result<Url, Error> {
         let mut uri = Url::parse(url)?;
-        let path = uri.path.clone();
-        let parts = path.split("/").filter(|v| !v.is_empty());
+        let mut scan = Scanner::from(url);
 
-        for (i, text) in parts.enumerate() {
-            self.0[i].eval(text, &mut uri)?;
+        for expr in self.0.iter() {
+            expr.eval(&mut scan, &mut uri)?;
         }
 
         return Ok(uri);
@@ -112,13 +111,8 @@ mod test {
 
         expr = template.0.pop().unwrap();
 
-        assert!(expr.is_literal());
-        assert_eq!(expr.to_string(), "=");
-
-        expr = template.0.pop().unwrap();
-
         assert!(expr.is_var());
-        assert_eq!(expr.to_string(), "{world}");
+        assert_eq!(expr.to_string(), "={world}");
         assert!(template.0.is_empty());
     }
 
@@ -130,5 +124,25 @@ mod test {
             template.to_string(),
             "http://localhost:3000/(a|b)?hello={world}"
         );
+    }
+
+    #[test]
+    pub fn should_evaluate() {
+        let mut template =
+            super::Template::parse("http://*:3000/(user|users)/{user}/orgs/{org_id}").unwrap();
+
+        let mut url = template
+            .eval("http://localhost:3000/user/1/orgs/test")
+            .unwrap();
+
+        assert_eq!(url.params.get("user").unwrap(), "1");
+        assert_eq!(url.params.get("org_id").unwrap(), "test");
+
+        url = template
+            .eval("http://localhost:3000/users/1234/orgs/myorgid")
+            .unwrap();
+
+        assert_eq!(url.params.get("user").unwrap(), "1234");
+        assert_eq!(url.params.get("org_id").unwrap(), "myorgid");
     }
 }

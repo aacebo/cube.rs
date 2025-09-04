@@ -16,6 +16,10 @@ impl<'a> Scanner<'a> {
         return self.right;
     }
 
+    pub fn count(&self) -> usize {
+        return (self.right - self.left) + 1;
+    }
+
     /// if the scanner is EOF you
     /// have reached the end of the dataset
     pub fn is_eof(&self) -> bool {
@@ -52,8 +56,12 @@ impl<'a> Scanner<'a> {
 
     /// peek at the Nth next byte
     /// without moving forward
-    pub fn peek_offset(&self, n: usize) -> Option<u8> {
-        return match self.data.as_bytes().get(self.right + n) {
+    pub fn peek_offset(&self, n: isize) -> Option<u8> {
+        return match self
+            .data
+            .as_bytes()
+            .get(((self.right as isize) + n) as usize)
+        {
             None => None,
             Some(v) => Some(*v),
         };

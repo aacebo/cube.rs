@@ -21,7 +21,41 @@ pub struct Wildcard {
 }
 
 impl Wildcard {
-    pub fn eval(&self, text: &str, url: &mut Url) -> Result<(), Error> {
+    pub fn len(&self) -> usize {
+        return (self.end() - self.start()) + 1;
+    }
+
+    pub fn start(&self) -> usize {
+        return match &self.left {
+            None => self.token.start,
+            Some(v) => v.start(),
+        };
+    }
+
+    pub fn end(&self) -> usize {
+        return match &self.right {
+            None => self.token.end,
+            Some(v) => v.end(),
+        };
+    }
+
+    pub fn eval(&self, scan: &mut Scanner<'_>, url: &mut Url) -> Result<(), Error> {
+        if let Some(left) = &self.left {
+            left.eval(scan, url)?;
+        }
+
+        if let Some(right) = &self.right {
+            scan.next_until_bytes(right.to_string().as_bytes());
+        } else {
+            scan.next_until_end();
+        }
+
+        scan.commit();
+
+        if let Some(right) = &self.right {
+            right.eval(scan, url)?;
+        }
+
         return Ok(());
     }
 

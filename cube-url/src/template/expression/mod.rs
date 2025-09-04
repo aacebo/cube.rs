@@ -65,13 +65,37 @@ impl Expression {
         };
     }
 
-    pub fn eval(&self, text: &str, url: &mut Url) -> Result<(), Error> {
+    pub fn len(&self) -> usize {
+        return (self.end() - self.start()) + 1;
+    }
+
+    pub fn start(&self) -> usize {
         return match self {
-            Self::Group(v) => v.eval(text, url),
-            Self::Literal(v) => v.eval(text, url),
-            Self::Logical(v) => v.eval(text, url),
-            Self::Var(v) => v.eval(text, url),
-            Self::Wildcard(v) => v.eval(text, url),
+            Self::Group(v) => v.start(),
+            Self::Literal(v) => v.start(),
+            Self::Logical(v) => v.start(),
+            Self::Var(v) => v.start(),
+            Self::Wildcard(v) => v.start(),
+        };
+    }
+
+    pub fn end(&self) -> usize {
+        return match self {
+            Self::Group(v) => v.end(),
+            Self::Literal(v) => v.end(),
+            Self::Logical(v) => v.end(),
+            Self::Var(v) => v.end(),
+            Self::Wildcard(v) => v.end(),
+        };
+    }
+
+    pub fn eval(&self, scan: &mut Scanner<'_>, url: &mut Url) -> Result<(), Error> {
+        return match self {
+            Self::Group(v) => v.eval(scan, url),
+            Self::Literal(v) => v.eval(scan, url),
+            Self::Logical(v) => v.eval(scan, url),
+            Self::Var(v) => v.eval(scan, url),
+            Self::Wildcard(v) => v.eval(scan, url),
         };
     }
 
@@ -84,9 +108,8 @@ impl Expression {
 impl Expression {
     pub fn parse(scan: &mut Scanner<'_>) -> Result<Self, Error> {
         return match scan.curr() {
-            b'{' => Ok(Var::parse(scan)?),
             b'(' => Ok(Group::parse(scan)?),
-            _ => Ok(Wildcard::parse(scan)?),
+            _ => Ok(Var::parse(scan)?),
         };
     }
 }
@@ -157,13 +180,8 @@ mod test {
 
         expr = super::Expression::parse(&mut scan).unwrap();
 
-        assert!(expr.is_literal());
-        assert_eq!(expr.to_string(), "=");
-
-        expr = super::Expression::parse(&mut scan).unwrap();
-
         assert!(expr.is_var());
-        assert_eq!(expr.to_string(), "{world}");
+        assert_eq!(expr.to_string(), "={world}");
         assert!(scan.is_eof());
     }
 }

@@ -17,14 +17,34 @@ use crate::{
 pub struct Literal(Token);
 
 impl Literal {
-    pub fn eval(&self, text: &str, url: &mut Url) -> Result<(), Error> {
-        if text != self.0.to_string() {
+    pub fn len(&self) -> usize {
+        return self.0.len();
+    }
+
+    pub fn start(&self) -> usize {
+        return self.0.start();
+    }
+
+    pub fn end(&self) -> usize {
+        return self.0.end();
+    }
+
+    pub fn eval(&self, scan: &mut Scanner<'_>, url: &mut Url) -> Result<(), Error> {
+        while !scan.is_eof() && scan.count() < self.0.len() {
+            scan.next();
+        }
+
+        if scan.to_string() != self.0.to_string() {
             return Err(Error::from(format!(
-                "[cube::url::template] => expected '{}'",
-                self.0.to_string()
+                "[cube::url::template] => expected '{}', found '{}' [{}, {}]",
+                self.0.to_string(),
+                scan.to_string(),
+                self.0.start(),
+                self.0.end(),
             )));
         }
 
+        scan.commit();
         return Ok(());
     }
 

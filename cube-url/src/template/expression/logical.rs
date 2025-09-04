@@ -21,8 +21,47 @@ pub struct Logical {
 }
 
 impl Logical {
-    pub fn eval(&self, text: &str, url: &mut Url) -> Result<(), Error> {
-        return Ok(());
+    pub fn len(&self) -> usize {
+        return self.left.len() + 1 + self.right.len();
+    }
+
+    pub fn start(&self) -> usize {
+        return self.left.start();
+    }
+
+    pub fn end(&self) -> usize {
+        return self.right.end();
+    }
+
+    pub fn eval(&self, scan: &mut Scanner<'_>, url: &mut Url) -> Result<(), Error> {
+        let mut first = &self.left;
+        let mut second = &self.right;
+
+        if first.len() < self.right.len() {
+            first = &self.right;
+            second = &self.left;
+        }
+
+        let left = first.eval(scan, url);
+
+        if left.is_ok() {
+            return Ok(());
+        }
+
+        scan.reset();
+        let right = second.eval(scan, url);
+
+        if right.is_ok() {
+            return Ok(());
+        }
+
+        scan.reset();
+        return Err(Error::from(format!(
+            "[cube::url::template] => expected '{}'",
+            Error::new()
+                .push(&left.unwrap_err())
+                .push(&right.unwrap_err()),
+        )));
     }
 
     #[cfg(feature = "serde")]
