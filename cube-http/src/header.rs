@@ -3,6 +3,7 @@ use std::fmt;
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Header {
+    #[cfg_attr(feature = "serde", serde(untagged))]
     Raw(String),
 }
 
