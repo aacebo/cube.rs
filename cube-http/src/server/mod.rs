@@ -1,11 +1,15 @@
-use std::{collections::HashMap, io, net};
+use std::{io, net};
 
 pub mod router;
 
 mod request;
+use cube_url::Protocol;
 pub use request::*;
 
-use crate::{RequestMessage, ResponseMessage};
+mod response;
+pub use response::*;
+
+use crate::RequestMessage;
 
 pub struct Server;
 
@@ -21,7 +25,7 @@ impl Server {
         }
     }
 
-    fn on_connect(mut stream: net::TcpStream, _: net::SocketAddr) {
+    fn on_connect(stream: net::TcpStream, _: net::SocketAddr) {
         let message = match RequestMessage::read(&stream) {
             Err(err) => {
                 println!("{}", err);
@@ -39,22 +43,8 @@ impl Server {
         };
 
         println!("{}", request);
-
-        let response = ResponseMessage {
-            protocol: message.protocol,
-            protocol_v: message.protocol_v,
-            status: crate::Status::Ok,
-            headers: HashMap::new(),
-        };
-
-        match response.write(&mut stream) {
-            Err(err) => {
-                println!("{}", err);
-                return;
-            }
-            Ok(v) => v,
-        };
-
-        stream.shutdown(net::Shutdown::Both).unwrap();
+        let mut res = Response::<String>::new(stream);
+        let response = res.protocol(&Protocol::from(message.protocol), &message.protocol_v);
+        response.send().unwrap();
     }
 }

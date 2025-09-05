@@ -1,3 +1,5 @@
+use std::fmt;
+
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Header {
@@ -13,5 +15,13 @@ impl From<&str> for Header {
 impl From<String> for Header {
     fn from(value: String) -> Self {
         return Self::Raw(value);
+    }
+}
+
+impl fmt::Display for Header {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        return match self {
+            Self::Raw(v) => write!(f, "{}", v),
+        };
     }
 }

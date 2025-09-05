@@ -65,6 +65,18 @@ impl From<&HashMap<String, String>> for Headers {
     }
 }
 
+impl Into<HashMap<String, String>> for Headers {
+    fn into(self) -> HashMap<String, String> {
+        let mut headers = HashMap::<String, String>::new();
+
+        for (key, value) in &self.data {
+            headers.insert(key.clone(), value.to_string());
+        }
+
+        return headers;
+    }
+}
+
 #[cfg(feature = "serde")]
 impl std::fmt::Display for Headers {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
