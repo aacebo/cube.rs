@@ -1,7 +1,7 @@
 use std::fmt;
 
 /// https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Protocol {
     /// https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/blob

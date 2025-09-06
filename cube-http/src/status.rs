@@ -4,7 +4,7 @@ use cube_core::error::Error;
 
 /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status
 #[repr(u16)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Status {
     /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/100

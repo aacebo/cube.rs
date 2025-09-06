@@ -2,7 +2,7 @@ use std::fmt;
 
 /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods
 #[repr(u8)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Method {
     /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods/GET
